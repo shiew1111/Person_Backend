@@ -7,10 +7,9 @@ class Request:
         self.response = requests.request("GET", self.url)
 
     def from_api(self):
-        return self.response.json()
+        return self.response.json().get('results')
 
 
-R = Request()
-for x in R.from_api().get('results'):
-    print(x)
-    print("\n")
+R = Request().from_api()
+
+print(R[398])
