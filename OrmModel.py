@@ -10,6 +10,7 @@ db = SqliteDatabase(DATABASE)
 # Create a base-class all our models will inherit, which defines
 # the database we'll be using.
 class Person(Model):
+    uuid = TextField(primary_key=True)
     days_till_birthday = IntegerField()
     gender = CharField()
     first_name = CharField()
@@ -22,3 +23,4 @@ class Person(Model):
 
     class Meta:
         database = db  # That means Person Model will use persons.db
+

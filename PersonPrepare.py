@@ -34,6 +34,7 @@ def tillBirthdayCalc(personFromAPI):
 def personDataSelector(personFromAPI):
     daysTillBirthday = tillBirthdayCalc(personFromAPI)
     PersonMatchingDb = {
+        "uuid": personFromAPI.get('login').get('uuid'),
         "days_till_birthday": daysTillBirthday,
         "gender": personFromAPI.get('gender'),
         "first_name": personFromAPI.get('name').get('first'),
