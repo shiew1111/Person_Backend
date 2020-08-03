@@ -12,4 +12,4 @@ class Request:
 
 R = Request().from_api()
 
-print(R[398])
+

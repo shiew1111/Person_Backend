@@ -5,14 +5,29 @@ import re
 def tillBirthdayCalc(personFromAPI):
     currentDate = datetime.now()
     person_birthday = datetime.strptime(personFromAPI.get('dob').get('date'), "%Y-%m-%dT%H:%M:%S.%fZ")
-    if datetime(currentDate.year, person_birthday.month, person_birthday.day) >= datetime(currentDate.year,
-                                                                                          currentDate.month,
-                                                                                          currentDate.day):
-        delta = datetime(currentDate.year, person_birthday.month, person_birthday.day)
-    else:
-        # catch error i wstaw coś gdyby był rok przystępony i 29 jebany lutego
-        delta = datetime(currentDate.year + 1, person_birthday.month, person_birthday.day)
-    daysTillBirthday = (delta - currentDate).days + 1
+
+    try:
+        if datetime(currentDate.year, person_birthday.month, person_birthday.day) >= datetime(currentDate.year,
+                                                                                              currentDate.month,
+                                                                                              currentDate.day):
+            delta = datetime(currentDate.year, person_birthday.month, person_birthday.day)
+        else:
+
+            delta = datetime(currentDate.year + 1, person_birthday.month, person_birthday.day)
+    # When person is born 29.02, we catch it and calculate days till birthday to the closest leap year.
+    # In that way you can sometimes see in database that someone have higher value than 365 days till birthday.
+    except ValueError:
+        leapYear = True
+        i = 1
+        while leapYear:
+            i += 1
+            try:
+                delta = datetime(currentDate.year + i, person_birthday.month, person_birthday.day)
+                leapYear = False
+            except ValueError:
+                leapYear = True
+
+    daysTillBirthday = (currentDate - delta).days
     return abs(daysTillBirthday)
 
 
