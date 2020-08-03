@@ -12,6 +12,7 @@ db = SqliteDatabase(DATABASE)
 class Person(Model):
     uuid = TextField(primary_key=True)
     days_till_birthday = IntegerField()
+    age = IntegerField()
     gender = CharField()
     first_name = CharField()
     last_name = CharField()
@@ -23,4 +24,3 @@ class Person(Model):
 
     class Meta:
         database = db  # That means Person Model will use persons.db
-

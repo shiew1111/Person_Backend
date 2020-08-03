@@ -38,7 +38,7 @@ class ORM:
                 PersonPreparedList.append(PersonPrepared)
             # Cutting records into chunks,
             # because SQLite limit of variables per query.
-            for batch in chunked(PersonPreparedList, 99):
+            for batch in chunked(PersonPreparedList, 90):
                 # Executing 99 rows from list.
                 Person.insert_many(batch).execute()
 
@@ -54,7 +54,6 @@ class ORM:
 
 class Select:
     def select(self):
-        db.connect()
         query = Person.select()
         db.close()
         return query
@@ -74,5 +73,23 @@ class SelectFemale(Select):
         return query
 
 
-print(len(SelectMale().selectMale()))
-print(len(SelectFemale().selectFemale()))
+class SelectAge(Select):
+    def selectFemale(self):
+        query = Person.select(Person.age)
+        db.close()
+        return query
+
+
+class SelectMaleAge(SelectAge):
+    def selectMaleDob(self):
+        query = Person.select(Person.age).where(Person.gender == "male")
+        db.close()
+        return query
+
+
+class SelectFemaleAge(SelectAge):
+    def selectFemaleDob(self):
+        query = Person.select(Person.age).where(Person.gender == "female")
+        db.close()
+        return query
+ORM().fillTable()
