@@ -1,4 +1,6 @@
-from peewee import chunked
+import datetime
+
+from peewee import *
 
 from OrmModel import Person, db
 from Request import Request
@@ -60,36 +62,79 @@ class Select:
 
 
 class SelectMale(Select):
-    def selectMale(self):
+    def select(self):
         query = Person.select(Person.gender).where(Person.gender == "male")
         db.close()
         return query
 
 
 class SelectFemale(Select):
-    def selectFemale(self):
+    def select(self):
         query = Person.select(Person.gender).where(Person.gender == "female")
         db.close()
         return query
 
 
 class SelectAge(Select):
-    def selectFemale(self):
+    def select(self):
         query = Person.select(Person.age)
         db.close()
         return query
 
 
 class SelectMaleAge(SelectAge):
-    def selectMaleDob(self):
+    def select(self):
         query = Person.select(Person.age).where(Person.gender == "male")
         db.close()
         return query
 
 
 class SelectFemaleAge(SelectAge):
-    def selectFemaleDob(self):
+    def select(self):
         query = Person.select(Person.age).where(Person.gender == "female")
         db.close()
         return query
-ORM().fillTable()
+
+
+class SelectMostPopularCity(Select):
+    def select(self, limit=5):
+        query = Person.select(fn.Count(Person.city).alias("count"), Person.city).group_by(Person.city).order_by(
+            fn.Count(Person.city).desc()).limit(limit)
+        db.close()
+        return query
+
+
+class SelectMostPopularPassword(Select):
+    def select(self, limit=5):
+        query = Person.select(fn.Count(Person.password).alias("count"), Person.password).group_by(
+            Person.password).order_by(
+            fn.Count(Person.password).desc()).limit(limit)
+        db.close()
+        return query
+
+
+class SelectLongPassword(Select):
+    def select(self, ):
+        query = Person.select(Person.password).where(fn.LENGTH(Person.password) >= 8)
+        db.close()
+        return query
+
+
+class SelectBirthdayBetween(Select):
+    def __init__(self, startYear, startMonth, startDay, tillYear, tillMonth, tillDay):
+        self.startYear = startYear
+        self.startMonth = startMonth
+        self.startDay = startDay
+        self.tillYear = tillYear
+        self.tillMonth = tillMonth
+        self.tillDay = tillDay
+
+    def select(self):
+        query = Person.select(Person.dob).where(
+            (Person.dob >= datetime.date(int(self.startYear), int(self.startMonth), int(self.startDay))) &
+            (Person.dob <= datetime.date(int(self.tillYear), int(self.tillMonth), int(self.tillDay)))).order_by(
+            Person.dob)
+        db.close()
+        return query
+
+
