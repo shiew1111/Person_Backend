@@ -8,8 +8,8 @@ def till_birthday_calc(personFromAPI):
 
     try:
         if datetime(current_date.year, person_birthday.month, person_birthday.day) >= datetime(current_date.year,
-                                                                                              current_date.month,
-                                                                                              current_date.day):
+                                                                                               current_date.month,
+                                                                                               current_date.day):
             delta = datetime(current_date.year, person_birthday.month, person_birthday.day)
         else:
 

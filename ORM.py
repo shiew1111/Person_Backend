@@ -8,10 +8,11 @@ from PersonPrepare import personDataSelector
 
 
 class ORM:
-
+    @db.connection_context()
     def createTable(self):
         db.create_tables([Person])
 
+    @db.connection_context()
     def fill_table(self):
         # Because that project does not require CRUD, I've decided to go as easy as I can and
         # clear table before insert data to avoid duplicates.
@@ -45,65 +46,68 @@ class ORM:
                 Person.insert_many(batch).execute()
 
         print("Records saved! Closing database connection!")
-        db.close()
 
+    @db.connection_context()
     def clear_person_table(self):
         db.connect()
         query = Person.delete()
         query.execute()
-        db.close()
 
 
 class Select:
+    @db.connection_context()
     def select(self):
         query = Person.select()
-        db.close()
+
         return query
 
 
 class SelectMale(Select):
+    @db.connection_context()
     def select(self):
         query = Person.select(Person.gender).where(Person.gender == "male")
-        db.close()
+
         return query
 
 
 class SelectFemale(Select):
+    @db.connection_context()
     def select(self):
         query = Person.select(Person.gender).where(Person.gender == "female")
-        db.close()
+
         return query
 
 
 class SelectAge(Select):
+    @db.connection_context()
     def select(self):
         query = Person.select(Person.age)
         person_age_list = []
         for age in query:
             person_age_list.append(age.age)
-        db.close()
+
         return person_age_list
 
 
 class SelectMaleAge(SelectAge):
+    @db.connection_context()
     def select(self):
         query = Person.select(Person.age).where(Person.gender == "male")
         person_age_list = []
         for age in query:
             person_age_list.append(age.age)
 
-        db.close()
         return person_age_list
 
 
 class SelectFemaleAge(SelectAge):
+    @db.connection_context()
     def select(self):
         query = Person.select(Person.age).where(Person.gender == "female")
         person_age_list = []
         for age in query:
             person_age_list.append(age.age)
 
-        db.close()
         return person_age_list
 
 
@@ -111,6 +115,7 @@ class SelectMostPopularCity(Select):
     def __init__(self, limit=5):
         self.limit = limit
 
+    @db.connection_context()
     def select(self):
         query = Person.select(fn.Count(Person.city).alias("count"), Person.city).group_by(Person.city).order_by(
             fn.Count(Person.city).desc()).limit(self.limit)
@@ -119,7 +124,6 @@ class SelectMostPopularCity(Select):
         for city in query:
             popular_cities_list.append({"City": city.city, "Count": city.count})
 
-        db.close()
         return popular_cities_list
 
 
@@ -127,6 +131,7 @@ class SelectMostPopularPassword(Select):
     def __init__(self, limit=5):
         self.limit = limit
 
+    @db.connection_context()
     def select(self):
         query = Person.select(fn.Count(Person.password).alias("count"), Person.password).group_by(
             Person.password).order_by(
@@ -135,17 +140,17 @@ class SelectMostPopularPassword(Select):
         for password in query:
             popular_password_list.append({"Password": password.password, "Count": password.count})
 
-        db.close()
         return popular_password_list
 
 
 class SelectPassword(Select):
+    @db.connection_context()
     def select(self):
         query = Person.select(Person.password)
         password_list = []
         for password in query:
             password_list.append(password.password)
-        db.close()
+
         return password_list
 
 
@@ -158,6 +163,7 @@ class SelectBirthdayBetween(Select):
         self.month_from = month_from
         self.year_from = year_from
 
+    @db.connection_context()
     def select(self):
         query = Person.select(Person.dob).where(
             (Person.dob >= datetime.date(int(self.year_from), int(self.month_from), int(self.day_from))) &
@@ -166,5 +172,5 @@ class SelectBirthdayBetween(Select):
         birthday_list = []
         for dob in query:
             birthday_list.append(dob.dob)
-        db.close()
+
         return birthday_list
