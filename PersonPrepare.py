@@ -36,7 +36,7 @@ def personDataSelector(personFromAPI):
     PersonMatchingDb = {
         "uuid": personFromAPI.get('login').get('uuid'),
         "days_till_birthday": daysTillBirthday,
-        "age" : personFromAPI.get('dob').get('age'),
+        "age": personFromAPI.get('dob').get('age'),
         "gender": personFromAPI.get('gender'),
         "first_name": personFromAPI.get('name').get('first'),
         "last_name": personFromAPI.get('name').get('last'),

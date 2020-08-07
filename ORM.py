@@ -41,7 +41,7 @@ class ORM:
             # Cutting records into chunks,
             # because SQLite limit of variables per query.
             for batch in chunked(PersonPreparedList, 90):
-                # Executing 99 rows from list.
+                # Executing 90 rows from list.
                 Person.insert_many(batch).execute()
 
         print("Records saved! Closing database connection!")
@@ -78,46 +78,75 @@ class SelectFemale(Select):
 class SelectAge(Select):
     def select(self):
         query = Person.select(Person.age)
+        personAgeList = []
+        for age in query:
+            personAgeList.append(age.age)
         db.close()
-        return query
+        return personAgeList
 
 
 class SelectMaleAge(SelectAge):
     def select(self):
         query = Person.select(Person.age).where(Person.gender == "male")
+        personAgeList = []
+        for age in query:
+            personAgeList.append(age.age)
+
         db.close()
-        return query
+        return personAgeList
 
 
 class SelectFemaleAge(SelectAge):
     def select(self):
         query = Person.select(Person.age).where(Person.gender == "female")
+        personAgeList = []
+        for age in query:
+            personAgeList.append(age.age)
+
         db.close()
-        return query
+        return personAgeList
 
 
 class SelectMostPopularCity(Select):
-    def select(self, limit=5):
+    def __init__(self, limit=5):
+        self.limit = limit
+
+    def select(self):
         query = Person.select(fn.Count(Person.city).alias("count"), Person.city).group_by(Person.city).order_by(
-            fn.Count(Person.city).desc()).limit(limit)
+            fn.Count(Person.city).desc()).limit(self.limit)
+
+        popularCitiesList = []
+        for city in query:
+            popularCitiesList.append({"City": city.city, "Count": city.count})
+
         db.close()
-        return query
+        return popularCitiesList
 
 
 class SelectMostPopularPassword(Select):
-    def select(self, limit=5):
+    def __init__(self, limit=5):
+        self.limit = limit
+
+    def select(self):
         query = Person.select(fn.Count(Person.password).alias("count"), Person.password).group_by(
             Person.password).order_by(
-            fn.Count(Person.password).desc()).limit(limit)
+            fn.Count(Person.password).desc()).limit(self.limit)
+        popularPasswordList = []
+        for password in query:
+            popularPasswordList.append({"Password": password.password, "Count": password.count})
+
         db.close()
-        return query
+        return popularPasswordList
 
 
 class SelectLongPassword(Select):
-    def select(self, ):
+    def select(self):
         query = Person.select(Person.password).where(fn.LENGTH(Person.password) >= 8)
+        passwordList = []
+        for password in query:
+            passwordList.append(password.password)
         db.close()
-        return query
+        return passwordList
 
 
 class SelectBirthdayBetween(Select):
@@ -134,7 +163,8 @@ class SelectBirthdayBetween(Select):
             (Person.dob >= datetime.date(int(self.startYear), int(self.startMonth), int(self.startDay))) &
             (Person.dob <= datetime.date(int(self.tillYear), int(self.tillMonth), int(self.tillDay)))).order_by(
             Person.dob)
+        birthdayList = []
+        for dob in query:
+            birthdayList.append(dob.dob)
         db.close()
-        return query
-
-
+        return birthdayList
