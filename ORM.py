@@ -1,9 +1,9 @@
 import datetime
 
-from peewee import *
+from peewee import chunked, fn
 
 from OrmModel import Person, db
-from Request import Request
+from Request import get_people_from_api
 from PersonPrepare import personDataSelector
 
 
@@ -15,12 +15,12 @@ class ORM:
     def fill_table(self):
         # Because that project does not require CRUD, I've decided to go as easy as I can and
         # clear table before insert data to avoid duplicates.
-        self.Clear_person_table()
+        self.clear_person_table()
 
         print("Downloading data from API...")
 
         # Requesting 1000 records from API ( same package as in file).
-        base_persons_from_api = Request().from_api()
+        base_persons_from_api = get_people_from_api()
 
         print("Downloaded!")
         print("Connecting to databse...")
@@ -47,7 +47,7 @@ class ORM:
         print("Records saved! Closing database connection!")
         db.close()
 
-    def Clear_person_table(self):
+    def clear_person_table(self):
         db.connect()
         query = Person.delete()
         query.execute()
@@ -139,9 +139,9 @@ class SelectMostPopularPassword(Select):
         return popular_password_list
 
 
-class SelectLongPassword(Select):
+class SelectPassword(Select):
     def select(self):
-        query = Person.select(Person.password).where(fn.LENGTH(Person.password) >= 8)
+        query = Person.select(Person.password)
         password_list = []
         for password in query:
             password_list.append(password.password)

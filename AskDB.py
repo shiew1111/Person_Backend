@@ -1,7 +1,8 @@
-from ORM import *
+from ORM import SelectFemale, SelectMale, SelectAge, SelectMaleAge, SelectFemaleAge, SelectMostPopularCity, \
+    SelectMostPopularPassword, SelectPassword, SelectBirthdayBetween
 
 
-class AskDB:
+class AskDB:  # that class above other  classes oi just cosmetic thing to get better organize for me.
     class _Select:
         def select_from_db(self, select):
             return select.select()
@@ -65,25 +66,14 @@ class AskDB:
     class BestPassword(_Select):
         def get(self):
 
-            passwords = self.select_from_db(SelectLongPassword())
+            passwords = self.select_from_db(SelectPassword())
             return self.calculate(passwords)
 
         def calculate(self, passwordsList):
 
             passwords_dict_list = []
             for password in passwordsList:
-
-                password_dict = {"Password": password, "Password_points": 5}
-
-                if any(c for c in password if not c.isalnum()):
-                    password_dict["Password_points"] += 3
-                if any(c for c in password if c.isnumeric()):
-                    password_dict["Password_points"] += 1
-                if any(c for c in password if c.islower()):
-                    password_dict["Password_points"] += 1
-                if any(c for c in password if c.isupper()):
-                    password_dict["Password_points"] += 2
-                passwords_dict_list.append(password_dict)
+                passwords_dict_list.append(self.password_score(password))
 
             best_password_points = max([x['Password_points'] for x in passwords_dict_list])
 
@@ -91,6 +81,21 @@ class AskDB:
                 if x['Password_points'] == best_password_points:
                     best_password = x["Password"]
                     return {"best_password": best_password, "Password_points": best_password_points}
+
+        def password_score(self, password):
+
+            password_dict = {"Password": password, "Password_points": 0}
+            if len(password) >= 8:
+                password_dict["Password_points"] += 5
+            if any(c for c in password if not c.isalnum()):
+                password_dict["Password_points"] += 3
+            if any(c for c in password if c.isnumeric()):
+                password_dict["Password_points"] += 1
+            if any(c for c in password if c.islower()):
+                password_dict["Password_points"] += 1
+            if any(c for c in password if c.isupper()):
+                password_dict["Password_points"] += 2
+            return password_dict
 
     class BirthdayBetween(_Select):
         def __init__(self, year_from, month_from, day_from, year_till, month_till, day_till):
@@ -105,5 +110,3 @@ class AskDB:
             return self.select_from_db(
                 SelectBirthdayBetween(self.year_from, self.month_from, self.day_from, self.year_till, self.month_till,
                                       self.day_till))
-
-
