@@ -1,11 +1,17 @@
 import argparse
 import datetime
-
+from ORM import ORM
 from AskDB import AskDB
 
 
 def console_interface():
     parser = argparse.ArgumentParser(description='Parse orders and arguments')
+
+    parser.add_argument('-ct', '--create_table', dest='create_table', action="store_true",
+                        help='Create empty table person')
+
+    parser.add_argument('-ft', '--fill_table', dest='fill_table', action="store_true",
+                        help='Fill table with persons requested from API')
 
     parser.add_argument('-gp', '--gender_percentage', dest='gender_percentage', action="store_true",
                         help='Returns the percentage of men and women')
@@ -31,6 +37,8 @@ def console_interface():
 
     args = parser.parse_args()
 
+    fill_table = args.fill_table
+    create_table = args.create_table
     gender_percentage = args.gender_percentage
     average_age = args.average_age
     average_age_male = args.average_age_male
@@ -40,6 +48,10 @@ def console_interface():
     most_common_password = args.most_common_password
     birthday_between = args.birthday_between
 
+    if create_table:
+        ORM().create_table()
+    if fill_table:
+        ORM().fill_table()
     if gender_percentage:
         print(AskDB().ManFemalePercentage().get())
     if average_age:

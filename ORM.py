@@ -1,6 +1,6 @@
 import datetime
-
-from peewee import chunked, fn
+import sys
+from peewee import chunked, fn, OperationalError
 
 from OrmModel import Person, db
 from Request import get_people_from_api
@@ -9,49 +9,58 @@ from PersonPrepare import personDataSelector
 
 class ORM:
     @db.connection_context()
-    def createTable(self):
+    def create_table(self):
         db.create_tables([Person])
+        print("Created table person.")
 
     @db.connection_context()
     def fill_table(self):
-        # Because that project does not require CRUD, I've decided to go as easy as I can and
-        # clear table before insert data to avoid duplicates.
-        self.clear_person_table()
+        try:
 
-        print("Downloading data from API...")
+            # Because that project does not require CRUD, I've decided to go as easy as I can and
+            # clear table before insert data to avoid duplicates.
+            self.clear_person_table()
 
-        # Requesting 1000 records from API ( same package as in file).
-        base_persons_from_api = get_people_from_api()
+            print("Downloading data from API...")
 
-        print("Downloaded!")
-        print("Connecting to databse...")
+            # Requesting 1000 records from API ( same package as in file).
+            base_persons_from_api = get_people_from_api()
 
-        db.connect()
+            print("Downloaded!")
+            print("Connecting to databse...")
 
-        print("Connected!")
-        print("Saving processed records into database...")
+            print("Connected!")
+            print("Saving processed records into database...")
 
-        person_prepared_list = []
-        with db.atomic():
-            # With for loop take all results from API and prepare every row to be matching with database.
-            for person in base_persons_from_api:
-                # Preparing single row.
-                person_prepared = personDataSelector(person)
-                # Saving prepared row into list.
-                person_prepared_list.append(person_prepared)
-            # Cutting records into chunks,
-            # because SQLite limit of variables per query.
-            for batch in chunked(person_prepared_list, 90):
-                # Executing 90 rows from list.
-                Person.insert_many(batch).execute()
+            person_prepared_list = []
+            with db.atomic():
+                # With for loop take all results from API and prepare every row to be matching with database.
+                for person in base_persons_from_api:
+                    # Preparing single row.
+                    person_prepared = personDataSelector(person)
+                    # Saving prepared row into list.
+                    person_prepared_list.append(person_prepared)
+                # Cutting records into chunks,
+                # because SQLite limit of variables per query.
+                for batch in chunked(person_prepared_list, 90):
+                    # Executing 90 rows from list.
+                    Person.insert_many(batch).execute()
 
-        print("Records saved! Closing database connection!")
+            print("Records saved! Closing database connection!")
+        except OperationalError as e:
+            if e.args == ('no such table: person',):
+                print("OperationalError: Table person not found. Try UI.py --create_table")
+                sys.exit(1)
 
     @db.connection_context()
     def clear_person_table(self):
-        db.connect()
-        query = Person.delete()
-        query.execute()
+        try:
+            query = Person.delete()
+            query.execute()
+        except OperationalError as e:
+            if e.args == ('no such table: person',):
+                print("OperationalError:Table person not found. Try UI.py --create_table")
+                sys.exit(1)
 
 
 class Select:
@@ -174,3 +183,6 @@ class SelectBirthdayBetween(Select):
             birthday_list.append(dob.dob)
 
         return birthday_list
+
+
+
