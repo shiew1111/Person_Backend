@@ -2,40 +2,40 @@ from datetime import datetime
 import re
 
 
-def tillBirthdayCalc(personFromAPI):
-    currentDate = datetime.now()
+def till_birthday_calc(personFromAPI):
+    current_date = datetime.now()
     person_birthday = datetime.strptime(personFromAPI.get('dob').get('date'), "%Y-%m-%dT%H:%M:%S.%fZ")
 
     try:
-        if datetime(currentDate.year, person_birthday.month, person_birthday.day) >= datetime(currentDate.year,
-                                                                                              currentDate.month,
-                                                                                              currentDate.day):
-            delta = datetime(currentDate.year, person_birthday.month, person_birthday.day)
+        if datetime(current_date.year, person_birthday.month, person_birthday.day) >= datetime(current_date.year,
+                                                                                              current_date.month,
+                                                                                              current_date.day):
+            delta = datetime(current_date.year, person_birthday.month, person_birthday.day)
         else:
 
-            delta = datetime(currentDate.year + 1, person_birthday.month, person_birthday.day)
+            delta = datetime(current_date.year + 1, person_birthday.month, person_birthday.day)
     # When person is born 29.02, we catch it and calculate days till birthday to the closest leap year.
     # In that way you can sometimes see in database that someone have higher value than 365 days till birthday.
     except ValueError:
-        leapYear = True
+        leap_year = True
         i = 1
-        while leapYear:
+        while leap_year:
             i += 1
             try:
-                delta = datetime(currentDate.year + i, person_birthday.month, person_birthday.day)
-                leapYear = False
+                delta = datetime(current_date.year + i, person_birthday.month, person_birthday.day)
+                leap_year = False
             except ValueError:
-                leapYear = True
+                leap_year = True
 
-    daysTillBirthday = (currentDate - delta).days
-    return abs(daysTillBirthday)
+    days_till_birthday = (current_date - delta).days
+    return abs(days_till_birthday)
 
 
 def personDataSelector(personFromAPI):
-    daysTillBirthday = tillBirthdayCalc(personFromAPI)
-    PersonMatchingDb = {
+    days_till_birthday = till_birthday_calc(personFromAPI)
+    person_matching_db = {
         "uuid": personFromAPI.get('login').get('uuid'),
-        "days_till_birthday": daysTillBirthday,
+        "days_till_birthday": days_till_birthday,
         "age": personFromAPI.get('dob').get('age'),
         "gender": personFromAPI.get('gender'),
         "first_name": personFromAPI.get('name').get('first'),
@@ -47,4 +47,4 @@ def personDataSelector(personFromAPI):
         "city": personFromAPI.get('location').get('city')
     }
 
-    return PersonMatchingDb
+    return person_matching_db

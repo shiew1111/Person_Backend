@@ -8,101 +8,102 @@ class AskDB:
 
     class ManFemalePercentage(_Select):
         def get(self):
-            maleRepresentation = len(self.select_from_db(SelectMale()))
-            femaleRepresentation = len(self.select_from_db(SelectFemale()))
-            percentageMale = (maleRepresentation / (maleRepresentation + femaleRepresentation)) * 100
-            percentageFemale = 100 - percentageMale
-            return {"Percentage_of_male": percentageMale, "Percentage_of_female": percentageFemale}
+            male_representation = self.select_from_db(SelectMale())
+            female_representation = self.select_from_db(SelectFemale())
+            return self.calculate(male_representation, female_representation)
+
+        def calculate(self, males, females):
+            male_representation_length = len(males)
+            female_representation_length = len(females)
+            percentage_male = (male_representation_length / (
+                    male_representation_length + female_representation_length)) * 100
+            percentage_female = 100 - percentage_male
+            return {"Percentage_of_male": percentage_male, "Percentage_of_female": percentage_female}
 
     class AverageAge(_Select):
         def get(self):
+            persons_age = self.select_from_db(SelectAge())
+            return self.calculate(persons_age)
+
+        def calculate(self, persons_age):
             sum = 0
-            personsAge = self.select_from_db(SelectAge())
-            for age in personsAge:
+            for age in persons_age:
                 sum += age
 
-            averageAge = sum / len(personsAge)
+            averageAge = sum / len(persons_age)
 
             return averageAge
 
     class AverageAgeMale(AverageAge):
         def get(self):
-            sum = 0
-            personsAge = self.select_from_db(SelectMaleAge())
-            for age in personsAge:
-                sum += age
-
-            averageAge = sum / len(personsAge)
-
-            return averageAge
+            persons_age = self.select_from_db(SelectMaleAge())
+            return self.calculate(persons_age)
 
     class AverageAgeFemale(AverageAge):
         def get(self):
-            sum = 0
-            personsAge = self.select_from_db(SelectFemaleAge())
-            for age in personsAge:
-                sum += age
-
-            avarageAge = sum / len(personsAge)
-
-            return avarageAge
+            persons_age = self.select_from_db(SelectFemaleAge())
+            return self.calculate(persons_age)
 
     class MostCommonCity(_Select):
         def __init__(self, limit=5):
             self.limit = limit
 
         def get(self):
-            popularCities = self.select_from_db(SelectMostPopularCity(self.limit))
+            popular_cities = self.select_from_db(SelectMostPopularCity(self.limit))
 
-            return popularCities
+            return popular_cities
 
     class MostCommonPassword(_Select):
         def __init__(self, limit=5):
             self.limit = limit
 
         def get(self, ):
-            popularPassword = self.select_from_db(SelectMostPopularPassword(self.limit))
+            popular_password = self.select_from_db(SelectMostPopularPassword(self.limit))
 
-            return popularPassword
+            return popular_password
 
     class BestPassword(_Select):
         def get(self):
 
             passwords = self.select_from_db(SelectLongPassword())
-            passwordsDictList = []
-            for password in passwords:
+            return self.calculate(passwords)
 
-                passwordDict = {"Password": password, "Password_points": 5}
+        def calculate(self, passwordsList):
+
+            passwords_dict_list = []
+            for password in passwordsList:
+
+                password_dict = {"Password": password, "Password_points": 5}
 
                 if any(c for c in password if not c.isalnum()):
-                    passwordDict["Password_points"] = passwordDict["Password_points"] + 3
+                    password_dict["Password_points"] += 3
                 if any(c for c in password if c.isnumeric()):
-                    passwordDict["Password_points"] = passwordDict["Password_points"] + 1
+                    password_dict["Password_points"] += 1
                 if any(c for c in password if c.islower()):
-                    passwordDict["Password_points"] = passwordDict["Password_points"] + 1
+                    password_dict["Password_points"] += 1
                 if any(c for c in password if c.isupper()):
-                    passwordDict["Password_points"] = passwordDict["Password_points"] + 2
-                passwordsDictList.append(passwordDict)
+                    password_dict["Password_points"] += 2
+                passwords_dict_list.append(password_dict)
 
-            bestPasswordPoints = max([x['Password_points'] for x in passwordsDictList])
+            best_password_points = max([x['Password_points'] for x in passwords_dict_list])
 
-            for x in passwordsDictList:
-                if x['Password_points'] == bestPasswordPoints:
-                    bestPassword = x["Password"]
-                    return {"bestPassword": bestPassword, "PasswordPoints": bestPasswordPoints}
+            for x in passwords_dict_list:
+                if x['Password_points'] == best_password_points:
+                    best_password = x["Password"]
+                    return {"best_password": best_password, "Password_points": best_password_points}
 
     class BirthdayBetween(_Select):
-        def __init__(self, yearFrom, monthFrom, dayFrom, yearTill, monthTill, dayTill):
-            self.dayTill = dayTill
-            self.monthTill = monthTill
-            self.yearTill = yearTill
-            self.dayFrom = dayFrom
-            self.monthFrom = monthFrom
-            self.yearFrom = yearFrom
+        def __init__(self, year_from, month_from, day_from, year_till, month_till, day_till):
+            self.day_till = day_till
+            self.month_till = month_till
+            self.year_till = year_till
+            self.day_from = day_from
+            self.month_from = month_from
+            self.year_from = year_from
 
         def get(self):
             return self.select_from_db(
-                SelectBirthdayBetween(self.yearFrom, self.monthFrom, self.dayFrom, self.yearTill, self.monthTill,
-                                      self.dayTill))
+                SelectBirthdayBetween(self.year_from, self.month_from, self.day_from, self.year_till, self.month_till,
+                                      self.day_till))
 
-# print(AskDB().BestPassword().get())
+

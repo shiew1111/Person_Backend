@@ -62,8 +62,8 @@ def console_interface():
         monthTill = birthday_between[1].month
         dayTill = birthday_between[1].day
 
-        print(AskDB().BirthdayBetween(yearFrom=yearFrom, monthFrom=monthFrom, dayFrom=dayFrom, yearTill=yearTill,
-                                      monthTill=monthTill, dayTill=dayTill).get())
+        print(AskDB().BirthdayBetween(year_from=yearFrom, month_from=monthFrom, day_from=dayFrom, year_till=yearTill,
+                                      month_till=monthTill, day_till=dayTill).get())
 
 
 if __name__ == "__main__":
