@@ -17,8 +17,8 @@ class Person(Model):
     first_name = CharField()
     last_name = CharField()
     dob = DateField()
-    phone = IntegerField()
-    cell = IntegerField()
+    phone = CharField()
+    cell = CharField()
     password = TextField()
     city = CharField()
 

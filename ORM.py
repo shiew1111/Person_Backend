@@ -4,7 +4,7 @@ from peewee import chunked, fn, OperationalError
 
 from OrmModel import Person, db
 from Request import get_people_from_api
-from PersonPrepare import personDataSelector
+from PersonPrepare import person_data_selector
 
 
 class ORM:
@@ -37,7 +37,7 @@ class ORM:
                 # With for loop take all results from API and prepare every row to be matching with database.
                 for person in base_persons_from_api:
                     # Preparing single row.
-                    person_prepared = personDataSelector(person)
+                    person_prepared = person_data_selector(person)
                     # Saving prepared row into list.
                     person_prepared_list.append(person_prepared)
                 # Cutting records into chunks,

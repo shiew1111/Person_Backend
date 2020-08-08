@@ -19,7 +19,8 @@ class AskDB:  # that class above other  classes oi just cosmetic thing to get be
             percentage_male = (male_representation_length / (
                     male_representation_length + female_representation_length)) * 100
             percentage_female = 100 - percentage_male
-            return {"Percentage_of_male": percentage_male, "Percentage_of_female": percentage_female}
+            return {"Percentage_of_male": round(percentage_male, 2),
+                    "Percentage_of_female": round(percentage_female, 2)}
 
     class AverageAge(_Select):
         def get(self):
@@ -33,7 +34,7 @@ class AskDB:  # that class above other  classes oi just cosmetic thing to get be
 
             averageAge = sum / len(persons_age)
 
-            return averageAge
+            return round(averageAge,2)
 
     class AverageAgeMale(AverageAge):
         def get(self):
@@ -80,7 +81,7 @@ class AskDB:  # that class above other  classes oi just cosmetic thing to get be
             for x in passwords_dict_list:
                 if x['Password_points'] == best_password_points:
                     best_password = x["Password"]
-                    return {"best_password": best_password, "Password_points": best_password_points}
+                    return {"best_password": best_password, "`Password_points`": best_password_points}
 
         def password_score(self, password):
 
@@ -110,5 +111,3 @@ class AskDB:  # that class above other  classes oi just cosmetic thing to get be
             return self.select_from_db(
                 SelectBirthdayBetween(self.year_from, self.month_from, self.day_from, self.year_till, self.month_till,
                                       self.day_till))
-
-

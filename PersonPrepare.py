@@ -31,8 +31,10 @@ def till_birthday_calc(personFromAPI):
     return abs(days_till_birthday)
 
 
-def personDataSelector(personFromAPI):
+def person_data_selector(personFromAPI):
     days_till_birthday = till_birthday_calc(personFromAPI)
+    phone = re.sub("[^0-9]", "", personFromAPI.get('phone'))
+    cell =re.sub("[^0-9]", "", personFromAPI.get('cell'))
     person_matching_db = {
         "uuid": personFromAPI.get('login').get('uuid'),
         "days_till_birthday": days_till_birthday,
@@ -41,8 +43,8 @@ def personDataSelector(personFromAPI):
         "first_name": personFromAPI.get('name').get('first'),
         "last_name": personFromAPI.get('name').get('last'),
         "dob": personFromAPI.get('dob').get('date'),
-        "phone": re.sub("[^0-9]", "", personFromAPI.get('phone')),
-        "cell": re.sub("[^0-9]", "", personFromAPI.get('cell')),
+        "phone": str(phone),
+        "cell": str(cell),
         "password": personFromAPI.get('login').get('password'),
         "city": personFromAPI.get('location').get('city')
     }
