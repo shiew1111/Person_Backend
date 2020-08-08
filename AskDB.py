@@ -13,9 +13,9 @@ class AskDB:  # that class above other  classes oi just cosmetic thing to get be
             female_representation = self.select_from_db(SelectFemale())
             return self.calculate(male_representation, female_representation)
 
-        def calculate(self, males, females):
-            male_representation_length = len(males)
-            female_representation_length = len(females)
+        def calculate(self, males_lisy, females_list):
+            male_representation_length = len(males_lisy)
+            female_representation_length = len(females_list)
             percentage_male = (male_representation_length / (
                     male_representation_length + female_representation_length)) * 100
             percentage_female = 100 - percentage_male
@@ -110,3 +110,5 @@ class AskDB:  # that class above other  classes oi just cosmetic thing to get be
             return self.select_from_db(
                 SelectBirthdayBetween(self.year_from, self.month_from, self.day_from, self.year_till, self.month_till,
                                       self.day_till))
+
+
