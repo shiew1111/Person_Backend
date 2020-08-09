@@ -55,12 +55,12 @@ def test_till_birthday_calc():
 
 
 # def i'll used to mocking till_birthday_calc in test_person_data_selector.
-def new_till_birthday_calc(arg):
+def mock_till_birthday_calc(arg):
     return 2
 
 
 def test_person_data_selector():
-    with mock.patch.object(PersonPrepare, 'till_birthday_calc', new=new_till_birthday_calc):
+    with mock.patch.object(PersonPrepare, 'till_birthday_calc', new=mock_till_birthday_calc):
         assert person_data_selector(
             {"gender": "female", "name": {"title": "Miss", "first": "Louane", "last": "Vidal"},
              "location": {"street": {"number": 2479, "name": "Place du 8 Février 1962"}, "city": "Avignon",

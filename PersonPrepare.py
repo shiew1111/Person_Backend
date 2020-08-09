@@ -34,7 +34,7 @@ def till_birthday_calc(personFromAPI):
 def person_data_selector(personFromAPI):
     days_till_birthday = till_birthday_calc(personFromAPI)
     phone = re.sub("[^0-9]", "", personFromAPI.get('phone'))
-    cell =re.sub("[^0-9]", "", personFromAPI.get('cell'))
+    cell = re.sub("[^0-9]", "", personFromAPI.get('cell'))
     person_matching_db = {
         "uuid": personFromAPI.get('login').get('uuid'),
         "days_till_birthday": days_till_birthday,
