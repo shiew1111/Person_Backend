@@ -81,7 +81,7 @@ class AskDB:  # that class above other  classes oi just cosmetic thing to get be
             for x in passwords_dict_list:
                 if x['Password_points'] == best_password_points:
                     best_password = x["Password"]
-                    return {"best_password": best_password, "`Password_points`": best_password_points}
+                    return {"best_password": best_password, "Password_points": best_password_points}
 
         def password_score(self, password):
 

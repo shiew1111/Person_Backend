@@ -5,6 +5,7 @@ from AskDB import AskDB
 
 
 def console_interface():
+
     parser = argparse.ArgumentParser(description='Parse orders and arguments')
 
     parser.add_argument('-ct', '--create_table', dest='create_table', action="store_true",
