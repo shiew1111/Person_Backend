@@ -1,7 +1,7 @@
 import argparse
 import datetime
 
-from ask_DB import ManFemalePercentage, AverageAge, AverageAgeMale, AverageAgeFemale, BestPassword, MostCommonCity, \
+from Quests.ask_DB import ManFemalePercentage, AverageAge, AverageAgeMale, AverageAgeFemale, BestPassword, MostCommonCity, \
     MostCommonPassword, BirthdayBetween
 from ObjectRelationalMapping.orm import ORM
 

@@ -1,4 +1,4 @@
-from ask_DB import ManFemalePercentage, AverageAge, BestPassword
+from Quests.ask_DB import ManFemalePercentage, AverageAge, BestPassword
 
 
 def test_calculate_ManFemalePercentage():
