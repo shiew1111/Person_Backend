@@ -1,11 +1,12 @@
 import argparse
 import datetime
-from ORM import ORM
-from AskDB import AskDB
+
+from ask_DB import ManFemalePercentage, AverageAge, AverageAgeMale, AverageAgeFemale, BestPassword, MostCommonCity, \
+    MostCommonPassword, BirthdayBetween
+from ObjectRelationalMapping.orm import ORM
 
 
 def console_interface():
-
     parser = argparse.ArgumentParser(description='Parse orders and arguments')
 
     parser.add_argument('-ct', '--create_table', dest='create_table', action="store_true",
@@ -54,19 +55,19 @@ def console_interface():
     if fill_table:
         ORM().fill_table()
     if gender_percentage:
-        print(AskDB().ManFemalePercentage().get())
+        print(ManFemalePercentage().get())
     if average_age:
-        print(AskDB().AverageAge().get())
+        print(AverageAge().get())
     if average_age_male:
-        print(AskDB().AverageAgeMale().get())
+        print(AverageAgeMale().get())
     if average_age_female:
-        print(AskDB().AverageAgeFemale().get())
+        print(AverageAgeFemale().get())
     if best_password:
-        print(AskDB().BestPassword().get())
+        print(BestPassword().get())
     if most_common_city:
-        print(AskDB().MostCommonCity(limit=most_common_city).get())
+        print(MostCommonCity(limit=most_common_city).get())
     if most_common_password:
-        print(AskDB().MostCommonPassword(limit=most_common_password).get())
+        print(MostCommonPassword(limit=most_common_password).get())
     if birthday_between:
         yearFrom = birthday_between[0].year
         monthFrom = birthday_between[0].month
@@ -75,7 +76,7 @@ def console_interface():
         monthTill = birthday_between[1].month
         dayTill = birthday_between[1].day
 
-        print(AskDB().BirthdayBetween(year_from=yearFrom, month_from=monthFrom, day_from=dayFrom, year_till=yearTill,
+        print(BirthdayBetween(year_from=yearFrom, month_from=monthFrom, day_from=dayFrom, year_till=yearTill,
                                       month_till=monthTill, day_till=dayTill).get())
 
 

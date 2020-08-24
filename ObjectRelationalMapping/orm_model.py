@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import SqliteDatabase, Model, TextField, CharField, DateField, IntegerField
 
 DATABASE = 'persons.db'
 

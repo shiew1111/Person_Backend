@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 import mock
 
-import PersonPrepare
-from PersonPrepare import till_birthday_calc, person_data_selector
+from DataGet import person_prepare
+from DataGet.person_prepare import till_birthday_calc, person_data_selector
 
 
 def test_till_birthday_calc():
@@ -60,7 +60,7 @@ def mock_till_birthday_calc(arg):
 
 
 def test_person_data_selector():
-    with mock.patch.object(PersonPrepare, 'till_birthday_calc', new=mock_till_birthday_calc):
+    with mock.patch.object(person_prepare, 'till_birthday_calc', new=mock_till_birthday_calc):
         assert person_data_selector(
             {"gender": "female", "name": {"title": "Miss", "first": "Louane", "last": "Vidal"},
              "location": {"street": {"number": 2479, "name": "Place du 8 Février 1962"}, "city": "Avignon",

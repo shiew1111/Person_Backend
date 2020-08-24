@@ -1,8 +1,8 @@
-from AskDB import AskDB
+from ask_DB import ManFemalePercentage, AverageAge, BestPassword
 
 
 def test_calculate_ManFemalePercentage():
-    man_female_percentage = AskDB().ManFemalePercentage()
+    man_female_percentage = ManFemalePercentage()
     list_fifty = []
     list_forty = []
     for x in range(50):
@@ -18,7 +18,7 @@ def test_calculate_ManFemalePercentage():
 
 
 def test_calculate_AverageAge():
-    average_age = AskDB().AverageAge()
+    average_age = AverageAge()
 
     assert average_age.calculate([10, 10, 10]) == 10
     assert average_age.calculate([55, 60, 23]) == 46
@@ -27,13 +27,13 @@ def test_calculate_AverageAge():
 
 
 def test_calculate_BestPassword():
-    best_password = AskDB().BestPassword()
+    best_password = BestPassword()
     assert best_password.calculate(["supertajne", "1Qq!11111", "A", "a", "1", "!"]) == {"best_password": "1Qq!11111",
                                                                                         "Password_points": 12}
 
 
 def test_password_score_BestPassword():
-    best_password = AskDB().BestPassword()
+    best_password = BestPassword()
     assert best_password.password_score("supertajne") == {"Password": "supertajne", "Password_points": 6}
     assert best_password.password_score("1Qq!11111") == {"Password": "1Qq!11111", "Password_points": 12}
     assert best_password.password_score("A") == {"Password": "A", "Password_points": 2}

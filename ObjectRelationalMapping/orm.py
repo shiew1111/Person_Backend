@@ -2,9 +2,9 @@ import datetime
 import sys
 from peewee import chunked, fn, OperationalError
 
-from OrmModel import Person, db
-from Request import get_people_from_api
-from PersonPrepare import person_data_selector
+from ObjectRelationalMapping.orm_model import Person, db
+from DataGet.request import get_people_from_api
+from DataGet.person_prepare import person_data_selector
 
 
 class ORM:
