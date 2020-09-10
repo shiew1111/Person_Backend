@@ -1,5 +1,5 @@
-# ProfilBackendRecruitment2020
-Task for ProfilSoftware intern Recruiment
+
+
 
 
 Before usage Install requiments.txt ( python -m pip install -r requirements.txt )
